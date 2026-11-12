@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>使用 Hexo &#43; GitHub &#43; Netlify &#43; Cloudflare提高博客的访问速度 | 我的错</title>
+<meta name="keywords" content="">
+<meta name="description" content="使用 Hexo &#43; GitHub &#43; Netlify &#43; Cloudflare 提高博客的访问速度
+今天也是看大佬的教程改了自己的配置发现访问速度确实快了许多，遂自己写一份教程加深一些理解。
+
+大佬的教程：https://blog.grin.cool/blog/Hexo-blog#/
+
+
+注意本教程不适合纯 Hexo 小白（其实只要略微了解过一丢丢 Hexo 的就能看懂这篇教程），适合前期有过 GitHub pages 建立经验的进阶用户
+食用本教程若有进不去网站等情况请检查你的代理或者开魔法再进
+
+
+食用本教程请确保
+
+使用过 Hexo 等博客框架，略微了解使用方法
+了解 GitHub，Git 的一些基本操作
+**了解 **《提问的智慧》 以及 《如何像一个弱智一样提问》
+在没有错误日志下诊断问题无异于闭眼开车
+
+
+首先，本教程相对于 GitHub pages 的优势
+
+本方法不再局限于只有一个仓库可以生成静态页面
+国内访问速度飞快
+每月有 100G 流量带宽额度，300 分钟的构建时间，对于个人博客记录来讲完全够用甚至还余下很多
+静态页面生成速度高于 GitHub pages 至少一倍
+Netlify 可以启用免费的 TLS 证书，启用 HTTPS
+
+用久了 GitHub pages 发现，在国内的访问速度确实是有点慢，这是因为 GitHub pages 的服务器是在国外，所以在国内访问慢是正常的
+这个方法 不需要云服务器，不需要备案，全部免费
+也是看到了某大佬的博客才用这种方法 0 成本（时间成本不计入）提高博客访问速度
+需要注意的是，本方法与原先的 GitHub pages 部署方法并不同
+
+GitHub pages 是本地编译然后把编译好的前端页面推送到 GitHub repo
+这里采用的改进方法是直接把 Hexo 源码推送到 GitHub repo，用 Netlify 进行自动编译
+">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/posts/%E6%8F%90%E9%AB%98%E5%8D%9A%E5%AE%A2%E7%9A%84%E8%AE%BF%E9%97%AE%E9%80%9F%E5%BA%A6/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.95ae6e9689bd0037456375629f411acbf8ed76e0e9a7599900ad281f9526dee6.css" integrity="sha256-la5ulom9ADdFY3Vin0Eay/jtduDpp1mZAK0oH5Um3uY=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/%E6%8F%90%E9%AB%98%E5%8D%9A%E5%AE%A2%E7%9A%84%E8%AE%BF%E9%97%AE%E9%80%9F%E5%BA%A6/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="header-nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="我的错 (Alt + H)">我的错</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" class="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu" class="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      使用 Hexo &#43; GitHub &#43; Netlify &#43; Cloudflare提高博客的访问速度
+    </h1>
+    <div class="post-meta">
+
+<span title='2024-09-05T07:57:11+08:00'>2024年9月5日</span>
+
+</div>
+  </header> 
+  <div class="post-content md-content"><h2 id="使用-hexo--github--netlify--cloudflare-提高博客的访问速度">使用 Hexo + GitHub + Netlify + Cloudflare 提高博客的访问速度<a hidden class="anchor" aria-hidden="true" href="#使用-hexo--github--netlify--cloudflare-提高博客的访问速度">#</a></h2>
+<p><strong>今天也是看大佬的教程改了自己的配置发现访问速度确实快了许多，遂自己写一份教程加深一些理解。</strong></p>
+<blockquote>
+<p><strong>大佬的教程：</strong><a href="https://blog.grin.cool/blog/Hexo-blog#/">https://blog.grin.cool/blog/Hexo-blog#/</a></p>
+</blockquote>
+<blockquote>
+<p><strong>注意本教程不适合纯 Hexo 小白（其实只要略微了解过一丢丢 Hexo 的就能看懂这篇教程），适合前期有过 GitHub pages 建立经验的进阶用户</strong></p>
+<p><strong>食用本教程若有进不去网站等情况请检查你的代理或者开魔法再进</strong></p>
+</blockquote>
+<blockquote>
+<p><strong>食用本教程请确保</strong></p>
+<ol>
+<li><strong>使用过 Hexo 等博客框架，略微了解使用方法</strong></li>
+<li><strong>了解 GitHub，Git 的一些基本操作</strong></li>
+<li>**了解 **<a href="https://w1ndys.top/posts/fb3832f5.html">《提问的智慧》</a> 以及 <a href="https://blog.arisa.moe/blog/2022/220428-how-to-ask-questions-like-a-retard/#/">《如何像一个弱智一样提问》</a></li>
+<li><strong>在没有错误日志下诊断问题无异于闭眼开车</strong></li>
+</ol>
+</blockquote>
+<p><strong>首先，本教程相对于 GitHub pages 的优势</strong></p>
+<ol>
+<li><strong>本方法不再局限于只有一个仓库可以生成静态页面</strong></li>
+<li><strong>国内访问速度飞快</strong></li>
+<li><strong>每月有 100G 流量带宽额度，300 分钟的构建时间，对于个人博客记录来讲完全够用甚至还余下很多</strong></li>
+<li><strong>静态页面生成速度高于 GitHub pages 至少一倍</strong></li>
+<li><strong>Netlify 可以启用免费的 TLS 证书，启用 HTTPS</strong></li>
+</ol>
+<p><strong>用久了 GitHub pages 发现，在国内的访问速度确实是有点慢，这是因为 GitHub pages 的服务器是在国外，所以在国内访问慢是正常的</strong></p>
+<p><strong>这个方法 不需要云服务器，不需要备案，全部免费</strong></p>
+<p><strong>也是看到了某大佬的博客才用这种方法 0 成本（时间成本不计入）提高博客访问速度</strong></p>
+<p><strong>需要注意的是，本方法与原先的 GitHub pages 部署方法并不同</strong></p>
+<blockquote>
+<p><strong>GitHub pages 是本地编译然后把编译好的前端页面推送到 GitHub repo</strong></p>
+<p><strong>这里采用的改进方法是直接把 Hexo 源码推送到 GitHub repo，用 Netlify 进行自动编译</strong></p>
+</blockquote>
+<p><strong>这里的好处就是</strong></p>
+<ol>
+<li><strong>不占用原来的 github.io 域名，也就是说这两个可以共存</strong></li>
+<li><strong>源码直接在 GitHub repo 仓库里，不用担心数据丢失</strong></li>
+<li><strong>如果换了电脑，可以直接从 GitHub 拉取源码在进行操作</strong></li>
+</ol>
+<p><strong>废话不多说直接开始操作</strong></p>
+<h2 id="准备魔法工具如已有可绕过">准备魔法工具（如已有可绕过）<a hidden class="anchor" aria-hidden="true" href="#准备魔法工具如已有可绕过">#</a></h2>
+<h2 id="github-操作">GitHub 操作<a hidden class="anchor" aria-hidden="true" href="#github-操作">#</a></h2>
+<p>**首先进入 **<a href="https://github.com/">GitHub</a> 建立一个空仓库</p>
+<p><strong>这里仓库名随便写就行，不再被 github.io 限制</strong></p>
+<p><strong>我这里以 blog-Netlify-anzhiyu 为例，公有私有都行，你不想公开源码的话就私有</strong></p>
+<p><img loading="lazy" src="https://gcore.jsdelivr.net/gh/alist1314/picture@main/pic/202503121452610.png"></p>
+<p><strong>直接 git clone 刚刚那个 repo</strong></p>
+<p><strong>然后在目录下初始化 Hexo，由于不是新手向教程，这里不过多赘述</strong></p>
+<blockquote>
+<p>**有关于 Hexo 的安装可以看这位大佬的博客 **<a href="https://akilar.top/posts/6ef63e2d/#/">https://akilar.top/posts/6ef63e2d/#/</a></p>
+</blockquote>
+<p><strong>初始化完成之后，安装你想安装的 Hexo 主题，我这里以 anzhiyu 主题为例</strong></p>
+<p>**下面是可供参考的 shell 脚本 **<strong>一键安装 anzhiyu 主题.sh</strong></p>
+<p>​| <code>1</code><!-- raw HTML omitted --><code>2</code><!-- raw HTML omitted --><code>3</code><!-- raw HTML omitted --><code>4</code><!-- raw HTML omitted --><code>5</code><!-- raw HTML omitted --><code>6</code><!-- raw HTML omitted --><code>7</code><!-- raw HTML omitted --><code>8</code><!-- raw HTML omitted --><code>9</code><!-- raw HTML omitted --><code>10</code><!-- raw HTML omitted --> | <code>printf &quot;\033[32mINFO \033[0m 正在安装主题...\n&quot;</code><!-- raw HTML omitted --><code>npm install Hexo-theme-anzhiyu</code><!-- raw HTML omitted --><code>printf &quot;\033[32mINFO \033[0m 主题安装完成\n&quot;</code><!-- raw HTML omitted --><code>printf &quot;\033[32mINFO \033[0m 正在安装依赖...\n&quot;</code><!-- raw HTML omitted --><code>npm install Hexo-renderer-pug Hexo-renderer-stylus --save</code><!-- raw HTML omitted --><code>printf &quot;\033[32mINFO \033[0m 依赖安装完成\n&quot;</code><!-- raw HTML omitted --><code>printf &quot;\033[32mINFO \033[0m 正在停顿10s可供查看情况！无异常可Ctrl+C退出\n&quot;</code><!-- raw HTML omitted --><code>sleep 10s</code><!-- raw HTML omitted --> |
+| &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;- | &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;- |</p>
+<p>​</p>
+<p><strong>主题安装完成后别忘了在你的</strong>_<strong>config.yml 文件里改掉主题，并且复制主题配置到博客根目录</strong></p>
+<blockquote>
+<p>_<strong>config.anzhiyu.yml</strong>  ** **_<strong>config.yml</strong></p>
+<p><strong>就是这俩文件</strong></p>
+</blockquote>
+<p><strong>然后改一下 package.json 里面 script 的内容，涉及到后面的参数填写</strong></p>
+<p>​| <code>1</code><!-- raw HTML omitted --><code>2</code><!-- raw HTML omitted --><code>3</code><!-- raw HTML omitted --><code>4</code><!-- raw HTML omitted --><code>5</code><!-- raw HTML omitted --><code>6</code><!-- raw HTML omitted --><code>7</code><!-- raw HTML omitted --> | <code>// package.json</code><!-- raw HTML omitted --><code>&quot;scripts&quot;: {</code><!-- raw HTML omitted --><code>  &quot;build&quot;: &quot;Hexo generate&quot;,</code><!-- raw HTML omitted --><code>  &quot;clean&quot;: &quot;Hexo clean&quot;,</code><!-- raw HTML omitted --><code>  &quot;server&quot;: &quot;Hexo server&quot;,</code><!-- raw HTML omitted --><code>  &quot;netlify&quot;: &quot;npm run clean &amp;&amp; npm run build&quot;</code><!-- raw HTML omitted --><code>}</code><!-- raw HTML omitted --> |
+| &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash; | &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&ndash; |</p>
+<p>​</p>
+<p><strong>然后就可以推送到仓库了</strong></p>
+<p>​| <code>1</code><!-- raw HTML omitted --><code>2</code><!-- raw HTML omitted --><code>3</code><!-- raw HTML omitted --> | <code>git add .</code><!-- raw HTML omitted --><code>git commit -m &quot;deploy from Hexo-admin&quot;</code><!-- raw HTML omitted --><code>git push</code><!-- raw HTML omitted --> |
+| &mdash;&mdash;&mdash;&mdash;&ndash; | &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash; |</p>
+<p>​</p>
+<p><strong>可以用 Hexo 命令在本地部署一下看看有没有 bug</strong></p>
+<p>​| <code>1</code><!-- raw HTML omitted --><code>2</code><!-- raw HTML omitted --><code>3</code><!-- raw HTML omitted --> | <code>Hexo clean</code><!-- raw HTML omitted --><code>Hexo generate</code><!-- raw HTML omitted --><code>Hexo s</code><!-- raw HTML omitted --> |
+| &mdash;&mdash;&mdash;&mdash;&ndash; | &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;- |</p>
+<p>​</p>
+<p><strong>刷新一下看看有没有推送上去</strong></p>
+<p><img alt="image-20240124135839416" loading="lazy" src="https://gcore.jsdelivr.net/gh/alist1314/picture@main/pic/202503121452615.png"></p>
+<p><strong>至此 GitHub 上的操作就告一段落了，继续往下走</strong></p>
+<h2 id="netlify-操作">Netlify 操作<a hidden class="anchor" aria-hidden="true" href="#netlify-操作">#</a></h2>
+<p>**来到 **<a href="https://app.netlify.com/">Netlify 官网</a></p>
+<p><img alt="image-20240124135949377" loading="lazy" src="https://gcore.jsdelivr.net/gh/alist1314/picture@main/pic/202503121452617.png"></p>
+<p><strong>直接以 GitHub 注册便于导入仓库，然后点击继续，等待重定向</strong></p>
+<p><img alt="image-20240124140145461" loading="lazy" src="https://gcore.jsdelivr.net/gh/alist1314/picture@main/pic/202503121452618.png"></p>
+<p><strong>然后点击左侧的 site，再点击 new site</strong></p>
+<p><strong>然后点击 Import an existing project</strong></p>
+<p><strong>然后 Deploywith GitHub</strong></p>
+<p><img alt="image-20240124140316478" loading="lazy" src="https://gcore.jsdelivr.net/gh/alist1314/picture@main/pic/202503121452620.png"></p>
+<p><strong>然后找到刚刚创建的 repo</strong></p>
+<p><strong>配置就按照我这个来写，注意分支，如果你是 master 填 master，如果你是 main 就填 main</strong></p>
+<p><img alt="image-20240124140806592" loading="lazy" src="https://gcore.jsdelivr.net/gh/alist1314/picture@main/pic/202503121452622.png"></p>
+<p><strong>然后点击 deploy</strong></p>
+<p><strong>创建完成之后就可以访问了</strong></p>
+<p><img alt="image-20240124140856386" loading="lazy" src="https://gcore.jsdelivr.net/gh/alist1314/picture@main/pic/202503121452623.png"></p>
+<p><strong>如果空白或者是啥也没有，请检查主题配置，一般是主题配置问题</strong></p>
+<p><img alt="image-20240124142940466" loading="lazy" src="https://gcore.jsdelivr.net/gh/alist1314/picture@main/pic/202503121452624.png"></p>
+<p><strong>点击左侧的 domain 可以配置域名</strong></p>
+<p><img alt="image-20240124143013535" loading="lazy" src="https://gcore.jsdelivr.net/gh/alist1314/picture@main/pic/202503121452625.png"></p>
+<p><strong>点击 add 可以添加自己的域名，点击右侧红框里可以自定义 Netlify 里的子域名</strong></p>
+<h2 id="配置域名以及-cloudflare-的-dns-配置">配置域名以及 cloudflare 的 DNS 配置<a hidden class="anchor" aria-hidden="true" href="#配置域名以及-cloudflare-的-dns-配置">#</a></h2>
+<p><strong>从第四步开始就需要域名了，没有自己私人域名的可以不用看了</strong></p>
+<p><strong>这里以阿里云域名控制台为例</strong></p>
+<p><strong>首先进控制台 CNAME 指向 Netlify 的域名</strong></p>
+<p><img alt="image-20240124143314135" loading="lazy" src="https://gcore.jsdelivr.net/gh/alist1314/picture@main/pic/202503121452627.png"></p>
+<p>**然后进入 **<a href="https://www.cloudflare-cn.com/">cloudflare 官网</a></p>
+<p><img alt="image-20240124143802475" loading="lazy" src="https://gcore.jsdelivr.net/gh/alist1314/picture@main/pic/202503121452628.png"></p>
+<p><strong>添加站点，把你自己的域名填上，注意不要带 www.，填纯域名</strong></p>
+<p>**比如 **<a href="http://www.w1ndys.top/">www.w1ndys.top</a> 只填 w1ndys.top 就可以</p>
+<p><strong>填写之后会看到让你改 DNS 服务器，我这里已经改过了</strong></p>
+<p><img alt="image-20240124144214920" loading="lazy" src="https://gcore.jsdelivr.net/gh/alist1314/picture@main/pic/202503121452629.png"></p>
+<p><strong>这里就去控制台把域名的 DNS 服务器改掉就可以了</strong></p>
+<p><strong>修改之后会等待一段时间审查，一般十分钟左右，但不会超过 24 小时</strong></p>
+<p><strong>审核完之后如图</strong></p>
+<p><img alt="image-20240124144042122" loading="lazy" src="https://gcore.jsdelivr.net/gh/alist1314/picture@main/pic/202503121452630.png"></p>
+<p><strong>然后我们进入到 DNS 记录</strong></p>
+<p><img alt="image-20240124144102621" loading="lazy" src="https://gcore.jsdelivr.net/gh/alist1314/picture@main/pic/202503121452632.png"></p>
+<p><strong>这里就根据你自己的域名，改成形如我这样的就可以了</strong></p>
+<p><img alt="image-20240124144141785" loading="lazy" src="https://gcore.jsdelivr.net/gh/alist1314/picture@main/pic/202503121452633.png"></p>
+<p><strong>到这里已经结束了。</strong></p>
+<p><strong>等待一段时间，访问你自己的域名试试</strong></p>
+<hr>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/">我的错</a></span> · 
+
+    
+    
+    <span>
+        Powered by
+        <a href="https://gohugo.io/?utm_source=papermod" rel="noopener" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" id="top-link" class="top-link hidden" aria-label="go to top" title="Go to Top (Alt + G)" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-up">
+        <polyline points="17 11 12 6 7 11"></polyline>
+        <polyline points="17 18 12 13 7 18"></polyline>
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        
+        let menuScrollTimeout;
+        menu.addEventListener("scroll", function () {
+            clearTimeout(menuScrollTimeout);
+            menuScrollTimeout = setTimeout(function () {
+                localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+            }, 150);
+        }, { passive: true });
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            const target = document.querySelector(`[id='${decodeURIComponent(id)}']`);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                target.scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                target.scrollIntoView();
+            }
+            
+            
+            if (target.tabIndex < 0 && !target.hasAttribute("tabindex")) {
+                target.setAttribute("tabindex", "-1");
+            }
+            target.focus({ preventScroll: true });
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var toplink = document.getElementById("top-link");
+    var scrollTicking = false;
+    
+    window.addEventListener("scroll", function () {
+        if (scrollTicking) {
+            return;
+        }
+        scrollTicking = true;
+        requestAnimationFrame(function () {
+            const scrollThreshold = window.innerHeight;
+            const shown = document.body.scrollTop > scrollThreshold || document.documentElement.scrollTop > scrollThreshold;
+            toplink.classList.toggle("hidden", !shown);
+            scrollTicking = false;
+        });
+    }, { passive: true });
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

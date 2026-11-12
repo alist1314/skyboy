@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Git on 我的错</title>
+    <link>http://localhost:1313/tags/git/</link>
+    <description>Recent content in Git on 我的错</description>
+    <generator>Hugo</generator>
+    <language>zh</language>
+    <lastBuildDate>Mon, 12 Aug 2024 08:00:40 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/git/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Git GUI的使用教程</title>
+      <link>http://localhost:1313/posts/git-gui%E7%9A%84%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/</link>
+      <pubDate>Mon, 12 Aug 2024 08:00:40 +0800</pubDate>
+      <guid>http://localhost:1313/posts/git-gui%E7%9A%84%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/</guid>
+      <description>&lt;h2 id=&#34;概述&#34;&gt;概述：&lt;/h2&gt;
+&lt;p&gt;git本身提供Git Bash和Git Gui两种模式，我更推荐使用Git Bash方式对Git进行操作， 但是对于大部分只是想简单地使用一下Git进行版本控制和团队开发的朋友而言，仍然更加钟情于可视化界面。&lt;/p&gt;
+&lt;p&gt;所以本文对Git官方自带的可视化工具Git Gui的使用进行介绍，尽量做到图文并茂，让所有初探Git的朋友都能够快速入门，使用Git进行项目开发。&lt;/p&gt;
+&lt;h2 id=&#34;作用&#34;&gt;作用:&lt;/h2&gt;
+&lt;p&gt;1、从服务器上克隆完整的Git仓库（包括代码和版本信息）到单机上。&lt;/p&gt;
+&lt;p&gt;2、在自己的机器上根据不同的开发目的，创建分支，修改代码。&lt;/p&gt;
+&lt;p&gt;3、在单机上自己创建的分支上提交代码。&lt;/p&gt;
+&lt;p&gt;4、在单机上合并分支。&lt;/p&gt;
+&lt;p&gt;5、把服务器上最新版的代码fetch下来，然后跟自己的主分支合并。&lt;/p&gt;
+&lt;p&gt;6.版本控制，可回滚&lt;/p&gt;
+&lt;h2 id=&#34;一权限校验-ssh-key&#34;&gt;&lt;strong&gt;一、权限校验-SSH Key：&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;1.复制客户端key：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;  启动GUI，菜单-帮助，【Step1-创建密钥】Generate SSH KEY
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://gcore.jsdelivr.net/gh/alist1314/picture@main/pic/202503121505055.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2.服务端添加可以&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt; 在github的ssh key中添加可以key即可
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://gcore.jsdelivr.net/gh/alist1314/picture@main/pic/202503121505056.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;PS&lt;/strong&gt;：到这里提交就不用输密码了&lt;/p&gt;
+&lt;h2 id=&#34;二克隆远程项目到本地&#34;&gt;二、克隆远程项目到本地：&lt;/h2&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://gcore.jsdelivr.net/gh/alist1314/picture@main/pic/202503121505057.png&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;三上传到远程&#34;&gt;三、上传到远程：&lt;/h2&gt;
+&lt;p&gt;#包含缓存改动，提交，上传&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://gcore.jsdelivr.net/gh/alist1314/picture@main/pic/202503121505058.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;PS：如果需要添加描述信息，就需要在操作前填写(提交时必须填写描述，其他操作可以不填写)&lt;/p&gt;
+&lt;h2 id=&#34;四获取远程代码&#34;&gt;&lt;strong&gt;四、获取远程代码：&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;比如你在公司做好的东东，今夜难眠十分亢奋，回家准备继续搬砖，那咱们就在家里的电脑上，同上进行好各种安装配置账号，先把公司做好的东东嫩下来（不过公司是内网不可以，但是假如是Github上是可以的）&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://gcore.jsdelivr.net/gh/alist1314/picture@main/pic/202503121505059.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://gcore.jsdelivr.net/gh/alist1314/picture@main/pic/202503121505060.png&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;相关连接&#34;&gt;相关连接：&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.runoob.com/w3cnote/git-gui-window.html&#34;&gt;https://www.runoob.com/w3cnote/git-gui-window.html&lt;/a&gt; &amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;.git教程&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://blog.csdn.net/qq_46514118/article/details/122529831&#34;&gt;https://blog.csdn.net/qq_46514118/article/details/122529831&lt;/a&gt; &amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;.&lt;a href=&#34;https://blog.csdn.net/xingxiupaioxue/article/details/125066433&#34;&gt;ssh免密登录配置&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://blog.csdn.net/mansir123/article/details/121692125&#34;&gt;https://blog.csdn.net/mansir123/article/details/121692125&lt;/a&gt; &amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;..git Gui汉化&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://blog.csdn.net/weixin_40283460/article/details/121968351&#34;&gt;https://blog.csdn.net/weixin_40283460/article/details/121968351&lt;/a&gt; &amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&amp;hellip;&lt;strong&gt;git stash暂存命令&lt;/strong&gt;&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
