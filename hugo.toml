@@ -1,0 +1,4 @@
+baseURL = 'https://example.org/'
+locale = 'zh'
+title = '我的错'
+theme = 'ananke'
